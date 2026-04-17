@@ -163,7 +163,7 @@ export default function CoursesPage() {
       <main className="bg-slate-50 min-h-screen pb-10 mt-12">
         {/* 1. HEADER SECTION */}
         {!selectedProgram && (
-          <section className="bg-[#0a1c43] py-10 mt-10 px-6 text-center">
+          <section className="bg-[#0a1c43] py-12 md:py-16 px-6 text-center">
             <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
               Our Programs
             </h1>

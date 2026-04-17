@@ -1,7 +1,11 @@
 import { type SchemaTypeDefinition } from 'sanity'
 import article from './article'
-import { syllabus } from './syllabus' // 1. Import the new schema here
+import { syllabus } from './syllabus' 
+import { resource } from './resource'
+import { faculty } from './faculty'
+import { event } from './event'
+
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [article, syllabus], // 2. Add it to the array here
+  types: [article, syllabus,resource,faculty, event], 
 }

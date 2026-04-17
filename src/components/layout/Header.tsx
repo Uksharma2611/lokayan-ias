@@ -3,53 +3,55 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useLenis } from "lenis/react"; // Integrated Lenis hook
+import { useLenis } from "lenis/react";
 import Button from "../ui/Button";
 
 export default function Header() {
   const pathname = usePathname();
-  const lenis = useLenis(); // Initialize Lenis
+  const lenis = useLenis();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile menu state
 
-  // If we are on the Studio page, do not render the Header at all
   if (pathname?.startsWith("/studio")) {
     return null;
   }
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 60) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 60);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- NEW: Handle Smooth Scroll to Top if already on the page ---
+  const closeEnquireModal = () => setIsEnquireOpen(false);
+
+  // Close menu and handle smooth scroll
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMobileMenuOpen(false); 
     if (pathname === href) {
       e.preventDefault();
-      lenis?.scrollTo(0); // Uses Lenis for the smooth glide back up
+      lenis?.scrollTo(0);
     }
   };
 
-  const closeEnquireModal = () => setIsEnquireOpen(false);
-
-  // --- THE NEW LOGIC ---
   const isHome = pathname === "/";
-
-  // The header is ONLY transparent if we are on the Home page AND haven't scrolled down yet.
   const isTransparent = isHome && !isScrolled;
+
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Courses", href: "/courses" },
+    { name: "Resources", href: "/resources" },
+    { name: "Faculty", href: "/faculty" },
+    { name: "Events", href: "/events" },
+  ];
 
   return (
     <>
       <header
         className={`fixed top-0 z-50 w-full transition-all duration-500 ${
-          isTransparent ? "bg-transparent py-4" : "bg-white shadow-md py-4"
+          isTransparent && !isMobileMenuOpen ? "bg-transparent py-5" : "bg-white shadow-md py-5"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -57,7 +59,7 @@ export default function Header() {
           <Link 
             href="/" 
             onClick={(e) => handleNavClick(e, "/")}
-            className="flex items-center group"
+            className="flex items-center group relative z-[60]"
           >
             <div className="transition-all duration-300">
               <Image
@@ -71,69 +73,77 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Navigation Links */}
+          {/* Desktop Navigation Links */}
           <nav
             className={`hidden md:flex items-center gap-10 font-semibold transition-colors duration-300 ${
               isTransparent ? "text-white" : "text-[#0a1c43]"
             }`}
           >
-            <Link 
-              href="/" 
-              onClick={(e) => handleNavClick(e, "/")}
-              className={`transition-colors hover:text-[#ed1c24] ${
-                pathname === "/" ? "text-[#ed1c24]" : ""
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/courses"
-              onClick={(e) => handleNavClick(e, "/courses")}
-              className={`transition-colors hover:text-[#ed1c24] ${
-                pathname === "/courses" ? "text-[#ed1c24]" : ""
-              }`}
-            >
-              Courses
-            </Link>
-            <Link
-              href="/resources"
-              onClick={(e) => handleNavClick(e, "/resources")}
-              className={`transition-colors hover:text-[#ed1c24] ${
-                pathname === "/resources" ? "text-[#ed1c24]" : ""
-              }`}
-            >
-              Resources
-            </Link>
-            <Link
-              href="/faculty"
-              onClick={(e) => handleNavClick(e, "/faculty")}
-              className={`transition-colors hover:text-[#ed1c24] ${
-                pathname === "/faculty" ? "text-[#ed1c24]" : ""
-              }`}
-            >
-              Faculty
-            </Link>
-            <Link
-              href="/events"
-              onClick={(e) => handleNavClick(e, "/events")}
-              className={`transition-colors hover:text-[#ed1c24] ${
-                pathname === "/events" ? "text-[#ed1c24]" : ""
-              }`}
-            >
-              Events
-            </Link>
+            {navLinks.map((link) => (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`transition-colors hover:text-[#ed1c24] ${
+                  pathname === link.href ? "text-[#ed1c24]" : ""
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="flex items-center gap-4">
-            <Button text="Enquire Now" onClick={() => setIsEnquireOpen(true)} />
+          {/* Right Section */}
+          <div className="flex items-center gap-4 relative z-[60]">
+            <div className="hidden md:block">
+              <Button text="Enquire Now" onClick={() => setIsEnquireOpen(true)} />
+            </div>
+
+            {/* Hamburger Button */}
+            <button 
+              className={`md:hidden p-2 transition-colors ${
+                isTransparent && !isMobileMenuOpen ? "text-white" : "text-[#0a1c43]"
+              }`}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
+        </div>
+
+        {/* Mobile Menu Overlay */}
+        <div 
+          className={`fixed inset-0 bg-white z-[50] flex flex-col items-center justify-center transition-transform duration-500 md:hidden ${
+            isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
+        >
+          <nav className="flex flex-col items-center gap-8">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`text-2xl font-bold transition-colors ${
+                  pathname === link.href ? "text-[#ed1c24]" : "text-[#0a1c43]"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="mt-4">
+              <Button text="Enquire Now" onClick={() => { setIsEnquireOpen(true); setIsMobileMenuOpen(false); }} />
+            </div>
+          </nav>
         </div>
       </header>
 
-      {/* ========================================= */}
-      {/* ENQUIRE NOW MODAL (Pop-up Form)             */}
-      {/* ========================================= */}
+      {/* ENQUIRE NOW MODAL */}
       {isEnquireOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
@@ -147,25 +157,13 @@ export default function Header() {
               className="absolute top-5 right-5 text-gray-400 hover:text-[#ed1c24] transition-colors"
               aria-label="Close modal"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#0a1c43] mb-2">
-                Request a Callback
-              </h2>
+              <h2 className="text-2xl font-bold text-[#0a1c43] mb-2">Request a Callback</h2>
             </div>
 
             <form
@@ -177,47 +175,39 @@ export default function Header() {
               }}
             >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                 <input
                   type="text"
                   placeholder="e.g. Utkarsh Sharma"
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all text-gray-800"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
                   <input
                     type="email"
                     placeholder="you@example.com"
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all text-gray-800"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     placeholder="+91 98765 43210"
                     required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all text-gray-800"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Interested In
-                </label>
-                <select className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all bg-white text-gray-800">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Interested In</label>
+                <select className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all bg-white text-gray-800">
                   <option value="">Select a program</option>
                   <option value="foundation">UPSC Foundation Course</option>
                   <option value="mains">Mains Test Series</option>
@@ -227,13 +217,11 @@ export default function Header() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Message (Optional)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
                 <textarea
                   rows={3}
                   placeholder="Any specific questions or doubts?"
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all resize-none text-gray-800"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all resize-none text-gray-800"
                 ></textarea>
               </div>
 
@@ -243,18 +231,8 @@ export default function Header() {
                   className="w-full bg-[#ed1c24] text-white font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors shadow-md flex items-center justify-center gap-2"
                 >
                   Submit Enquiry
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    ></path>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
               </div>

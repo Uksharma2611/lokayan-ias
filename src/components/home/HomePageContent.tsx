@@ -128,8 +128,6 @@ export default function HomePageContent() {
     };
   }, [selectedCourse, selectedArticle, isEnquireOpen]);
 
-  
-
   const closeCourseModal = () => setSelectedCourse(null);
   const closeArticleModal = () => setSelectedArticle(null);
   const closeEnquireModal = () => setIsEnquireOpen(false);
@@ -159,10 +157,13 @@ export default function HomePageContent() {
             officer.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button
-              text="Begin Your Journey"
-              onClick={() => setIsEnquireOpen(true)}
-            />
+            {/* UPDATED: Button replaced with Link to /contact */}
+            <Link
+              href="/contact"
+              className="px-8 py-3.5 bg-[#ed1c24] text-white rounded-full font-bold hover:bg-red-700 transition-all duration-300 shadow-md flex items-center justify-center"
+            >
+              Begin Your Journey
+            </Link>
             <Link
               href="/courses"
               className="px-7 py-3.5 rounded-full font-semibold border-2 border-white/70 text-white hover:bg-white hover:text-[#0a1c43] transition-all duration-300"
@@ -294,7 +295,6 @@ export default function HomePageContent() {
                 onClick={() => setSelectedCourse(course)}
                 className="cursor-pointer group rounded-xl border-2 border-gray-300 overflow-hidden flex flex-col sm:flex-row hover:shadow-2xl hover:border-[#0a1c43] hover:scale-[1.01] transition-all duration-500 text-left w-full focus:outline-none bg-white shadow-sm"
               >
-                {/* Updated styling to display the logos nicely */}
                 <div className="w-full sm:w-1/3 h-48 sm:h-auto relative shrink-0 border-b-2 sm:border-b-0 sm:border-r-2 border-gray-100 bg-slate-50/50 flex items-center justify-center p-6">
                   <div className="relative w-full h-full max-h-32">
                     <Image
@@ -339,7 +339,7 @@ export default function HomePageContent() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {/* Testimonial 1 */}
+          {/* Testimonials remain unchanged */}
           <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 relative">
             <p className="text-gray-700 font-light italic mb-6 leading-relaxed">
               "Lokayan's test series and personalized mentorship were the
@@ -358,7 +358,6 @@ export default function HomePageContent() {
             </div>
           </div>
 
-          {/* Testimonial 2 */}
           <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 relative">
             <p className="text-gray-700 font-light italic mb-6 leading-relaxed">
               "The comprehensive study materials and the faculty's dedication
@@ -377,7 +376,6 @@ export default function HomePageContent() {
             </div>
           </div>
 
-          {/* Testimonial 3 */}
           <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 relative">
             <p className="text-gray-700 font-light italic mb-6 leading-relaxed">
               "From foundational concepts to the final mock interviews, the
@@ -398,7 +396,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* MODALS */}
+      {/* MODALS (Logic remains the same for internal Enquire buttons) */}
       {selectedCourse && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
@@ -473,11 +471,11 @@ export default function HomePageContent() {
                 </button>
               </div>
               <Link
-  href={`/courses?program=${selectedCourse.slug.toUpperCase()}`}
-  className="flex items-center gap-2 px-5 py-2.5 bg-[#0a1c43] text-white rounded-full font-semibold hover:bg-[#ed1c24] transition-all text-sm shadow-md"
->
-  Full Curriculum &rarr;
-</Link>
+                href={`/courses?program=${selectedCourse.slug.toUpperCase()}`}
+                className="flex items-center gap-2 px-5 py-2.5 bg-[#0a1c43] text-white rounded-full font-semibold hover:bg-[#ed1c24] transition-all text-sm shadow-md"
+              >
+                Full Curriculum &rarr;
+              </Link>
             </div>
           </div>
         </div>
@@ -547,9 +545,7 @@ export default function HomePageContent() {
         </div>
       )}
 
-      {/* ========================================= */}
-      {/* ENQUIRE NOW MODAL (Pop-up Form)             */}
-      {/* ========================================= */}
+      {/* ENQUIRE NOW MODAL */}
       {isEnquireOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div

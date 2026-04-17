@@ -228,10 +228,10 @@ export default function Header() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Utkarsh Sharma"
+                    placeholder="e.g. John Doe"
                     className={`w-full px-4 py-2.5 rounded-lg border outline-none transition-all text-gray-800 ${formData.name && !isNameValid
-                        ? "border-red-400 focus:ring-2 focus:ring-red-100"
-                        : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
+                      ? "border-red-400 focus:ring-2 focus:ring-red-100"
+                      : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
                       }`}
                   />
                   {formData.name && !isNameValid && (
@@ -249,8 +249,8 @@ export default function Header() {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="you@example.com"
                       className={`w-full px-4 py-2.5 rounded-lg border outline-none transition-all text-gray-800 ${formData.email && !isEmailValid
-                          ? "border-red-400 focus:ring-2 focus:ring-red-100"
-                          : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
+                        ? "border-red-400 focus:ring-2 focus:ring-red-100"
+                        : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
                         }`}
                     />
                     {formData.email && !isEmailValid && (
@@ -266,8 +266,8 @@ export default function Header() {
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+91 98765 43210"
                       className={`w-full px-4 py-2.5 rounded-lg border outline-none transition-all text-gray-800 ${formData.phone && !isPhoneValid
-                          ? "border-red-400 focus:ring-2 focus:ring-red-100"
-                          : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
+                        ? "border-red-400 focus:ring-2 focus:ring-red-100"
+                        : "border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43]"
                         }`}
                     />
                     {formData.phone && !isPhoneValid && (
@@ -317,8 +317,8 @@ export default function Header() {
                               setIsDropdownOpen(false);
                             }}
                             className={`px-4 py-2.5 cursor-pointer transition-colors text-sm ${formData.program === option.value
-                                ? "bg-red-50 text-[#ed1c24] font-semibold"
-                                : "text-gray-700 hover:bg-slate-50 hover:text-[#0a1c43]"
+                              ? "bg-red-50 text-[#ed1c24] font-semibold"
+                              : "text-gray-700 hover:bg-slate-50 hover:text-[#0a1c43]"
                               }`}
                           >
                             {option.label}

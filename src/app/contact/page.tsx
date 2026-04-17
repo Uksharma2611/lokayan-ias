@@ -92,7 +92,7 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${formData.name && !isNameValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
                             }`}
-                          placeholder="Utkarsh Sharma"
+                          placeholder="John Doe"
                         />
                         {formData.name && !isNameValid && (
                           <p className="text-red-500 text-xs mt-1">Letters only, no special characters.</p>

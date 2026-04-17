@@ -18,7 +18,7 @@ const CATEGORIES = ["All", "Previous Year Papers", "Mock Tests", "Toppers' Notes
 export default function ResourcesPage() {
   const [activeExam, setActiveExam] = useState<"UPSC" | "MPSC">("UPSC");
   const [activeCategory, setActiveCategory] = useState("All");
-  
+
   // New States for Sanity Data
   const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,38 +79,35 @@ export default function ResourcesPage() {
         {/* 2. CONTROLS SECTION */}
         <section className="max-w-7xl mx-auto px-6 mt-8 mb-10">
           <div className="flex flex-col items-center gap-8">
-            
+
             {/* Exam Toggle Switch */}
             <div className="bg-white p-2 rounded-full shadow-sm border border-slate-200 inline-flex relative">
               <button
-                onClick={() => { 
-                  setActiveExam("UPSC"); 
-                  setActiveCategory("All"); 
+                onClick={() => {
+                  setActiveExam("UPSC");
+                  setActiveCategory("All");
                   setVisibleCount(6); // Reset count on tab change
                 }}
-                className={`relative z-10 px-8 py-2.5 rounded-full text-md font-bold transition-colors duration-300 ${
-                  activeExam === "UPSC" ? "text-white" : "text-gray-500 hover:text-[#0a1c43]"
-                }`}
+                className={`relative z-10 px-8 py-2.5 rounded-full text-md font-bold transition-colors duration-300 ${activeExam === "UPSC" ? "text-white" : "text-gray-500 hover:text-[#0a1c43]"
+                  }`}
               >
                 UPSC Civil Services
               </button>
               <button
-                onClick={() => { 
-                  setActiveExam("MPSC"); 
-                  setActiveCategory("All"); 
+                onClick={() => {
+                  setActiveExam("MPSC");
+                  setActiveCategory("All");
                   setVisibleCount(6); // Reset count on tab change
                 }}
-                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 ${
-                  activeExam === "MPSC" ? "text-white" : "text-gray-500 hover:text-[#0a1c43]"
-                }`}
+                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 ${activeExam === "MPSC" ? "text-white" : "text-gray-500 hover:text-[#0a1c43]"
+                  }`}
               >
                 MPSC State Services
               </button>
-              
-              <div 
-                className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#0a1c43] rounded-full transition-transform duration-300 ease-in-out ${
-                  activeExam === "UPSC" ? "translate-x-0 left-1.5" : "translate-x-full left-[3px]"
-                }`}
+
+              <div
+                className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#0a1c43] rounded-full transition-transform duration-300 ease-in-out ${activeExam === "UPSC" ? "translate-x-0 left-1.5" : "translate-x-full left-[3px]"
+                  }`}
               />
             </div>
 
@@ -124,18 +121,17 @@ export default function ResourcesPage() {
                       setActiveCategory(category);
                       setVisibleCount(6); // Reset count on category change
                     }}
-                    className={`px-5 py-2 rounded-lg text-md font-medium transition-all whitespace-nowrap ${
-                      activeCategory === category
+                    className={`px-5 py-2 rounded-lg text-md font-medium transition-all whitespace-nowrap ${activeCategory === category
                         ? "bg-red-50 text-[#ed1c24] border border-red-100"
                         : "bg-white text-gray-500 border border-slate-200 hover:bg-slate-100 hover:text-[#0a1c43]"
-                    }`}
+                      }`}
                   >
                     {category}
                   </button>
                 ))}
               </div>
             </div>
-            
+
           </div>
         </section>
 
@@ -161,7 +157,7 @@ export default function ResourcesPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* FIXED: Changed to map over visibleResources instead of filteredResources */}
                 {visibleResources.map((resource) => (
-                  <div 
+                  <div
                     key={resource._id}
                     className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex items-center gap-4 group"
                   >
@@ -170,7 +166,7 @@ export default function ResourcesPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    
+
                     <div className="flex-grow overflow-hidden">
                       <h3 className="font-bold text-[#0a1c43] text-md md:text-base truncate mb-1">
                         {resource.title}
@@ -188,7 +184,7 @@ export default function ResourcesPage() {
                       </div>
                     </div>
 
-                    <a 
+                    <a
                       href={`${resource.fileUrl}?dl=`}
                       download
                       target="_blank"

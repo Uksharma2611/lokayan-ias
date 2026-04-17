@@ -57,8 +57,8 @@ export default function FAQPage() {
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <button
@@ -74,12 +74,11 @@ export default function FAQPage() {
                       </svg>
                     </span>
                   </button>
-                  
+
                   {/* Smooth Slide Container */}
-                  <div 
-                    className={`grid transition-all duration-500 ease-in-out ${
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    }`}
+                  <div
+                    className={`grid transition-all duration-500 ease-in-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <div className="px-6 pb-6 text-gray-600 font-light leading-relaxed border-t border-slate-50 pt-4">
@@ -92,14 +91,14 @@ export default function FAQPage() {
             })}
           </div>
         </section>
-        
+
         {/* 3. CONTACT CTA */}
         <section className="max-w-4xl mx-auto px-6 mt-12 text-center">
           <div className="bg-blue-50 rounded-2xl p-8 border border-blue-100">
             <h3 className="text-xl font-bold text-[#0a1c43] mb-2">Still have questions?</h3>
             <p className="text-gray-600 mb-6">Our counseling team is here to assist you with your preparation strategy.</p>
             {/* UPDATED: onClick now triggers the modal state */}
-            <button 
+            <button
               onClick={() => setIsEnquireOpen(true)}
               className="inline-block bg-[#ed1c24] text-white font-bold px-8 py-3 rounded-lg hover:bg-red-700 transition-colors shadow-md"
             >

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLenis } from "lenis/react"; // 1. Import the Lenis hook
 import Footer from "@/src/components/layout/Footer";
-import { client } from "@/src/sanity/lib/client";
+import { client } from "@/src/sanity/lib/client"; 
 
 // --- DATA STRUCTURE ---
 const programData = {
@@ -105,7 +105,7 @@ const programData = {
 
 export default function CoursesPage() {
   const lenis = useLenis(); // 2. Initialize the hook
-
+  
   const [selectedProgram, setSelectedProgram] = useState<
     "UPSC" | "MPSC" | null
   >(null);
@@ -151,7 +151,7 @@ export default function CoursesPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const program = params.get("program")?.toUpperCase();
-
+      
       if (program === "UPSC" || program === "MPSC") {
         setSelectedProgram(program as "UPSC" | "MPSC");
       }

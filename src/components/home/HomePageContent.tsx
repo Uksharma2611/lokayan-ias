@@ -98,7 +98,6 @@ export default function HomePageContent() {
   >(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [isEnquireOpen, setIsEnquireOpen] = useState(false);
 
   // 1. Fetch Articles Effect
   useEffect(() => {
@@ -118,7 +117,7 @@ export default function HomePageContent() {
 
   // 2. Prevent Background Scrolling Effect
   useEffect(() => {
-    if (selectedCourse || selectedArticle || isEnquireOpen) {
+    if (selectedCourse || selectedArticle) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -126,11 +125,10 @@ export default function HomePageContent() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [selectedCourse, selectedArticle, isEnquireOpen]);
+  }, [selectedCourse, selectedArticle]);
 
   const closeCourseModal = () => setSelectedCourse(null);
   const closeArticleModal = () => setSelectedArticle(null);
-  const closeEnquireModal = () => setIsEnquireOpen(false);
 
   return (
     <main className="bg-white">
@@ -157,7 +155,6 @@ export default function HomePageContent() {
             officer.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {/* UPDATED: Button replaced with Link to /contact */}
             <Link
               href="/contact"
               className="px-8 py-3.5 bg-[#ed1c24] text-white rounded-full font-bold hover:bg-red-700 transition-all duration-300 shadow-md flex items-center justify-center"
@@ -225,45 +222,45 @@ export default function HomePageContent() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {articles.length > 0
               ? articles.map((article) => (
-                  <button
-                    key={article._id}
-                    onClick={() => setSelectedArticle(article)}
-                    className="cursor-pointer bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group hover:shadow-lg hover:scale-[1.02] transition-all duration-300 text-left w-full"
-                  >
-                    <div className="relative w-full h-48 bg-slate-200 overflow-hidden shrink-0">
-                      <Image
-                        src={article.imageUrl || "/assets/placeholder.png"}
-                        alt={article.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow w-full">
-                      <p className="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">
-                        {new Date(article._createdAt).toLocaleDateString(
-                          "en-US",
-                          { month: "short", day: "numeric", year: "numeric" },
-                        )}
-                      </p>
-                      <h3 className="text-lg font-bold text-[#0a1c43] mb-3 line-clamp-2 leading-snug">
-                        {article.title}
-                      </h3>
-                      <p className="text-gray-600 font-light text-sm line-clamp-3 mb-6 flex-grow">
-                        {article.excerpt}
-                      </p>
-                      <span className="text-sm font-bold text-[#ed1c24] group-hover:text-[#0a1c43] transition-colors mt-auto flex items-center gap-2">
-                        Read Article &rarr;
-                      </span>
-                    </div>
-                  </button>
-                ))
+                <button
+                  key={article._id}
+                  onClick={() => setSelectedArticle(article)}
+                  className="cursor-pointer bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group hover:shadow-lg hover:scale-[1.02] transition-all duration-300 text-left w-full"
+                >
+                  <div className="relative w-full h-48 bg-slate-200 overflow-hidden shrink-0">
+                    <Image
+                      src={article.imageUrl || "/assets/placeholder.png"}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow w-full">
+                    <p className="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">
+                      {new Date(article._createdAt).toLocaleDateString(
+                        "en-US",
+                        { month: "short", day: "numeric", year: "numeric" },
+                      )}
+                    </p>
+                    <h3 className="text-lg font-bold text-[#0a1c43] mb-3 line-clamp-2 leading-snug">
+                      {article.title}
+                    </h3>
+                    <p className="text-gray-600 font-light text-sm line-clamp-3 mb-6 flex-grow">
+                      {article.excerpt}
+                    </p>
+                    <span className="text-sm font-bold text-[#ed1c24] group-hover:text-[#0a1c43] transition-colors mt-auto flex items-center gap-2">
+                      Read Article &rarr;
+                    </span>
+                  </div>
+                </button>
+              ))
               : [1, 2, 3].map((s) => (
-                  <div
-                    key={s}
-                    className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-80 animate-pulse flex flex-col"
-                  />
-                ))}
+                <div
+                  key={s}
+                  className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-80 animate-pulse flex flex-col"
+                />
+              ))}
           </div>
         </div>
       </section>
@@ -339,7 +336,6 @@ export default function HomePageContent() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {/* Testimonials remain unchanged */}
           <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 relative">
             <p className="text-gray-700 font-light italic mb-6 leading-relaxed">
               "Lokayan's test series and personalized mentorship were the
@@ -396,7 +392,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* MODALS (Logic remains the same for internal Enquire buttons) */}
+      {/* MODALS */}
       {selectedCourse && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
@@ -459,10 +455,13 @@ export default function HomePageContent() {
             </ul>
             <div className="flex items-center justify-between gap-4 pt-6 border-t">
               <div className="flex gap-3">
-                <Button
-                  text="Enquire Now"
-                  onClick={() => setIsEnquireOpen(true)}
-                />
+                {/* Changed Button to Link to point to Contact Page */}
+                <Link
+                  href="/contact"
+                  className="px-6 py-2.5 bg-[#ed1c24] text-white rounded-full font-bold hover:bg-red-700 transition-all duration-300 shadow-md flex items-center justify-center text-sm"
+                >
+                  Enquire Now
+                </Link>
                 <button
                   onClick={closeCourseModal}
                   className="px-5 py-2.5 text-gray-500 hover:bg-gray-100 rounded-full transition-all text-sm font-medium"
@@ -541,136 +540,6 @@ export default function HomePageContent() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ENQUIRE NOW MODAL */}
-      {isEnquireOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-[#0a1c43]/70 backdrop-blur-sm transition-opacity"
-            onClick={closeEnquireModal}
-          ></div>
-
-          <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 overflow-hidden animate-in fade-in zoom-in duration-300">
-            <button
-              onClick={closeEnquireModal}
-              className="absolute top-5 right-5 text-gray-400 hover:text-[#ed1c24] transition-colors"
-              aria-label="Close modal"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#0a1c43] mb-2">
-                Request a Callback
-              </h2>
-            </div>
-
-            <form
-              className="space-y-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Form submitted! (Showcase only)");
-                closeEnquireModal();
-              }}
-            >
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Utkarsh Sharma"
-                  required
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="+91 98765 43210"
-                    required
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all text-gray-800"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Interested In
-                </label>
-                <select className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all bg-white text-gray-800">
-                  <option value="">Select a program</option>
-                  <option value="foundation">UPSC Foundation Course</option>
-                  <option value="mains">Mains Test Series</option>
-                  <option value="interview">Interview Guidance</option>
-                  <option value="other">General Counseling</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Message (Optional)
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Any specific questions or doubts?"
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] focus:border-[#0a1c43] outline-none transition-all resize-none text-gray-800"
-                ></textarea>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  className="w-full bg-[#ed1c24] text-white font-bold py-3.5 rounded-lg hover:bg-red-700 transition-colors shadow-md flex items-center justify-center gap-2"
-                >
-                  Submit Enquiry
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

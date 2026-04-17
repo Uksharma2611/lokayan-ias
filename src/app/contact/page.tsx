@@ -5,46 +5,64 @@ import Footer from "@/src/components/layout/Footer";
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // NEW: Dropdown animation state
 
   // Form State
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    program: "upsc",
+    program: "", // CHANGED: Default is now empty to show the placeholder
     message: ""
   });
 
-  // --- VALIDATION LOGIC ---
-  // Name: Letters and spaces only, minimum 2 characters
-  const isNameValid = /^[a-zA-Z\s]{2,50}$/.test(formData.name);
-  
-  // Email: Standard RFC email regex
-  const isEmailValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email);
-  
-  // Phone: 10 digits, optional +91 or +91- prefix
-  const isPhoneValid = /^(\+\d{1,3}[-\s]?)?\d{10}$/.test(formData.phone);
+  const programOptions = [
+    { value: "upsc", label: "UPSC Civil Services" },
+    { value: "mpsc", label: "MPSC State Services" },
+    { value: "test-series", label: "Test Series" },
+    { value: "other", label: "General Inquiry" }
+  ];
 
-  const isFormValid = isNameValid && isEmailValid && isPhoneValid;
+  // --- VALIDATION LOGIC ---
+  const isNameValid = /^[a-zA-Z\s]{2,50}$/.test(formData.name);
+  const isEmailValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email);
+  const isPhoneValid = /^(\+\d{1,3}[-\s]?)?\d{10}$/.test(formData.phone);
+  const isProgramValid = formData.program !== ""; // NEW: Ensure a program is selected
+
+  const isFormValid = isNameValid && isEmailValid && isPhoneValid && isProgramValid;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isFormValid) return;
 
     setIsSubmitting(true);
-    
-    // Simulate API Call
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("https://formspree.io/f/xeevgqve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setFormData({ name: "", email: "", phone: "", program: "", message: "" });
+      } else {
+        alert("Oops! There was a problem submitting your form. Please check the backend configuration.");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("A network error occurred. Please try again later.");
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({ name: "", email: "", phone: "", program: "upsc", message: "" });
-    }, 1500);
+    }
   };
 
   return (
     <>
       <main className="bg-slate-50 min-h-screen pb-20 mt-12">
-        {/* 1. HERO HEADER */}
         <section className="bg-[#0a1c43] py-12 md:py-16 px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
@@ -56,47 +74,41 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* 2. SPLIT LAYOUT SECTION */}
         <section className="max-w-7xl mx-auto px-6 mt-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            
-            {/* LEFT: ENQUIRY FORM */}
+
             <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
               {!isSuccess ? (
                 <>
                   <h2 className="text-2xl font-bold text-[#0a1c43] mb-6">Send a Message</h2>
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Name Input */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                        <input 
-                          type="text" 
-                          required 
+                        <input
+                          type="text"
+                          required
                           value={formData.name}
-                          onChange={(e) => setFormData({...formData, name: e.target.value})}
-                          className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${
-                            formData.name && !isNameValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
-                          }`} 
-                          placeholder="Utkarsh Sharma" 
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${formData.name && !isNameValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
+                            }`}
+                          placeholder="Utkarsh Sharma"
                         />
                         {formData.name && !isNameValid && (
                           <p className="text-red-500 text-xs mt-1">Letters only, no special characters.</p>
                         )}
                       </div>
 
-                      {/* Phone Input */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                        <input 
-                          type="tel" 
-                          required 
+                        <input
+                          type="tel"
+                          required
                           value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${
-                            formData.phone && !isPhoneValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
-                          }`} 
-                          placeholder="9876543210" 
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${formData.phone && !isPhoneValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
+                            }`}
+                          placeholder="9876543210"
                         />
                         {formData.phone && !isPhoneValid && (
                           <p className="text-red-500 text-xs mt-1">Please enter a valid 10-digit number.</p>
@@ -104,55 +116,92 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    {/* Email Input */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                      <input 
-                        type="email" 
-                        required 
+                      <input
+                        type="email"
+                        required
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${
-                          formData.email && !isEmailValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
-                        }`} 
-                        placeholder="you@example.com" 
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 outline-none transition-all ${formData.email && !isEmailValid ? "border-red-400 focus:ring-red-100" : "border-gray-300 focus:ring-[#0a1c43]"
+                          }`}
+                        placeholder="you@example.com"
                       />
                       {formData.email && !isEmailValid && (
                         <p className="text-red-500 text-xs mt-1">Please enter a valid email address.</p>
                       )}
                     </div>
 
+                    {/* UPDATED: Custom Animated Dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Interested In</label>
-                      <select 
-                        value={formData.program}
-                        onChange={(e) => setFormData({...formData, program: e.target.value})}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all bg-white"
-                      >
-                        <option value="upsc">UPSC Civil Services</option>
-                        <option value="mpsc">MPSC State Services</option>
-                        <option value="test-series">Test Series</option>
-                        <option value="other">General Inquiry</option>
-                      </select>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Interested In *</label>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                          onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+                          className={`w-full px-4 py-2.5 rounded-lg border outline-none transition-all bg-white flex justify-between items-center ${isDropdownOpen ? "border-[#0a1c43] ring-2 ring-[#0a1c43]" : "border-gray-300 hover:border-gray-400"
+                            }`}
+                        >
+                          <span className={formData.program === "" ? "text-gray-500" : "text-gray-800"}>
+                            {formData.program === ""
+                              ? "Select an option"
+                              : programOptions.find(p => p.value === formData.program)?.label}
+                          </span>
+                          <svg
+                            className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        <div
+                          className={`absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden transition-all duration-300 origin-top ${isDropdownOpen ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0 pointer-events-none"
+                            }`}
+                        >
+                          <ul className="py-2">
+                            <li className="px-4 py-2 text-sm text-gray-400 bg-gray-50 cursor-not-allowed">
+                              Select an option
+                            </li>
+                            {programOptions.map((option) => (
+                              <li
+                                key={option.value}
+                                onClick={() => {
+                                  setFormData({ ...formData, program: option.value });
+                                  setIsDropdownOpen(false);
+                                }}
+                                className={`px-4 py-2.5 cursor-pointer transition-colors text-sm ${formData.program === option.value
+                                  ? "bg-red-50 text-[#ed1c24] font-semibold"
+                                  : "text-gray-700 hover:bg-slate-50 hover:text-[#0a1c43]"
+                                  }`}
+                              >
+                                {option.label}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                      <textarea 
-                        rows={4} 
+                      <textarea
+                        rows={4}
                         value={formData.message}
-                        onChange={(e) => setFormData({...formData, message: e.target.value})}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all resize-none" 
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0a1c43] outline-none transition-all resize-none"
                         placeholder="How can we assist you?"
                       ></textarea>
                     </div>
 
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={isSubmitting || !isFormValid}
-                      className={`w-full text-white font-bold py-3.5 rounded-lg transition-colors shadow-md flex justify-center items-center ${
-                        isSubmitting || !isFormValid ? "bg-gray-400 cursor-not-allowed" : "bg-[#ed1c24] hover:bg-red-700"
-                      }`}
+                      className={`w-full text-white font-bold py-3.5 rounded-lg transition-colors shadow-md flex justify-center items-center ${isSubmitting || !isFormValid ? "bg-gray-400 cursor-not-allowed" : "bg-[#ed1c24] hover:bg-red-700"
+                        }`}
                     >
                       {isSubmitting ? "Sending..." : "Submit Inquiry"}
                     </button>
@@ -173,31 +222,48 @@ export default function ContactPage() {
             {/* RIGHT: CONTACT INFO & MAP */}
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                  <div className="text-[#ed1c24] mb-3">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                <a
+                  href="mailto:contact@lokayan.com"
+                  className="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:scale-105 hover:border-[#ed1c24]/30 transition-all duration-300 block"
+                >
+                  <div className="text-[#ed1c24] mb-3 group-hover:scale-110 transition-transform origin-left">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
                   </div>
-                  <h3 className="font-bold text-[#0a1c43]">Email Support</h3>
-                  <p className="text-gray-500 text-sm">contact@lokayan.com</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                  <div className="text-[#ed1c24] mb-3">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  <h3 className="font-bold text-[#0a1c43] mb-1">Email Support</h3>
+                  <p className="text-gray-500 text-sm group-hover:text-[#ed1c24] transition-colors">
+                    contact@lokayan.com
+                  </p>
+                </a>
+
+                <a
+                  href="tel:+919123456789"
+                  className="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:scale-105 hover:border-[#ed1c24]/30 transition-all duration-300 block"
+                >
+                  <div className="text-[#ed1c24] mb-3 group-hover:scale-110 transition-transform origin-left">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
                   </div>
-                  <h3 className="font-bold text-[#0a1c43]">Call Us</h3>
-                  <p className="text-gray-500 text-sm">+91 91234 56789</p>
-                </div>
+                  <h3 className="font-bold text-[#0a1c43] mb-1">Call Us</h3>
+                  <p className="text-gray-500 text-sm group-hover:text-[#ed1c24] transition-colors">
+                    +91 91234 56789
+                  </p>
+                </a>
               </div>
 
-              {/* MAP */}
-              <div className="bg-slate-200 rounded-2xl h-[350px] overflow-hidden border border-slate-200 relative">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.393439401861!2d73.84992447600858!3d18.51111666946487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c065f44383c7%3A0xe5c149d63f9e9882!2sLokayan%20IAS%20Academy!5e0!3m2!1sen!2sin!4v1711200000000!5m2!1sen!2sin" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen={true} 
+              <div className="bg-slate-200 rounded-2xl h-[350px] overflow-hidden border border-slate-200 relative group">
+                <div className="absolute inset-0 bg-transparent z-10 pointer-events-none md:pointer-events-auto md:hover:pointer-events-none transition-all"></div>
+                <iframe
+                  src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Lokayan%20IAS%20Academy,%20Bal%20Ganesh%20Tower,%20Thane%20West+(Lokayan%20IAS%20Academy)&t=&z=15&ie=UTF8&iwloc=B&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="relative z-0"
                 ></iframe>
               </div>
             </div>

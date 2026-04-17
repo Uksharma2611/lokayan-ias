@@ -63,30 +63,43 @@ export default function Header() {
               isTransparent ? "text-white" : "text-[#0a1c43]"
             }`}
           >
-            <Link href="/" className="hover:text-[#ed1c24] transition-colors">
+            <Link 
+              href="/" 
+              className={`transition-colors hover:text-[#ed1c24] ${
+                pathname === "/" ? "text-[#ed1c24]" : ""
+              }`}
+            >
               Home
             </Link>
             <Link
               href="/courses"
-              className="hover:text-[#ed1c24] transition-colors"
+              className={`transition-colors hover:text-[#ed1c24] ${
+                pathname === "/courses" ? "text-[#ed1c24]" : ""
+              }`}
             >
               Courses
             </Link>
             <Link
               href="/resources"
-              className="hover:text-[#ed1c24] transition-colors"
+              className={`transition-colors hover:text-[#ed1c24] ${
+                pathname === "/resources" ? "text-[#ed1c24]" : ""
+              }`}
             >
               Resources
             </Link>
             <Link
               href="/faculty"
-              className="hover:text-[#ed1c24] transition-colors"
+              className={`transition-colors hover:text-[#ed1c24] ${
+                pathname === "/faculty" ? "text-[#ed1c24]" : ""
+              }`}
             >
               Faculty
             </Link>
             <Link
               href="/events"
-              className="hover:text-[#ed1c24] transition-colors"
+              className={`transition-colors hover:text-[#ed1c24] ${
+                pathname === "/events" ? "text-[#ed1c24]" : ""
+              }`}
             >
               Events
             </Link>

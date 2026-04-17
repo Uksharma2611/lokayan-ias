@@ -89,7 +89,7 @@ export default function FacultyPage() {
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="w-full md:w-3/5 order-2 md:order-1">
               <span className="text-[#ed1c24] font-bold tracking-widest text-sm uppercase mb-2 block">
-                Message from the Founder
+                Message from the Director
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-[#0a1c43] mb-6">
                 Guiding the Next Generation of Leaders
@@ -104,7 +104,7 @@ export default function FacultyPage() {
               </div>
               <div className="mt-8 pt-6 border-t border-slate-100">
                 <p className="font-bold text-[#0a1c43] text-lg">Bhushan Deshmukh</p>
-                <p className="text-sm text-gray-500">Founder & Chief Mentor, Lokayan IAS</p>
+                <p className="text-sm text-gray-500">Director & Chief Mentor, Lokayan IAS</p>
               </div>
             </div>
             

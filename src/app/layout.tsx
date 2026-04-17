@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/src/components/layout/Header"; // Make sure this path matches your setup!
+import Header from "@/src/components/layout/Header";
+import SmoothScrolling from "@/src/components/providers/SmoothScrolling";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,14 +29,14 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      {/* Added bg-white so the background stays clean! */}
       <body className="min-h-full flex flex-col bg-white">
-        <Header />
-
-        {/* This "children" automatically renders page.tsx, courses/page.tsx, etc. */}
-        <main className="flex-grow">
-          {children}
-        </main>
+        {/* Wrapping with Lenis Smooth Scrolling */}
+        <SmoothScrolling>
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+        </SmoothScrolling>
       </body>
     </html>
   );

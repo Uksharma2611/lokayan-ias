@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useLenis } from "lenis/react"; // Integrated Lenis hook
 import Button from "../ui/Button";
 
 export default function Header() {
   const pathname = usePathname();
+  const lenis = useLenis(); // Initialize Lenis
   const [isScrolled, setIsScrolled] = useState(false);
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
 
@@ -27,6 +29,14 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- NEW: Handle Smooth Scroll to Top if already on the page ---
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === href) {
+      e.preventDefault();
+      lenis?.scrollTo(0); // Uses Lenis for the smooth glide back up
+    }
+  };
+
   const closeEnquireModal = () => setIsEnquireOpen(false);
 
   // --- THE NEW LOGIC ---
@@ -44,7 +54,11 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo Section */}
-          <Link href="/" className="flex items-center group">
+          <Link 
+            href="/" 
+            onClick={(e) => handleNavClick(e, "/")}
+            className="flex items-center group"
+          >
             <div className="transition-all duration-300">
               <Image
                 src="/assets/lokayan-logo-new.svg"
@@ -65,6 +79,7 @@ export default function Header() {
           >
             <Link 
               href="/" 
+              onClick={(e) => handleNavClick(e, "/")}
               className={`transition-colors hover:text-[#ed1c24] ${
                 pathname === "/" ? "text-[#ed1c24]" : ""
               }`}
@@ -73,6 +88,7 @@ export default function Header() {
             </Link>
             <Link
               href="/courses"
+              onClick={(e) => handleNavClick(e, "/courses")}
               className={`transition-colors hover:text-[#ed1c24] ${
                 pathname === "/courses" ? "text-[#ed1c24]" : ""
               }`}
@@ -81,6 +97,7 @@ export default function Header() {
             </Link>
             <Link
               href="/resources"
+              onClick={(e) => handleNavClick(e, "/resources")}
               className={`transition-colors hover:text-[#ed1c24] ${
                 pathname === "/resources" ? "text-[#ed1c24]" : ""
               }`}
@@ -89,6 +106,7 @@ export default function Header() {
             </Link>
             <Link
               href="/faculty"
+              onClick={(e) => handleNavClick(e, "/faculty")}
               className={`transition-colors hover:text-[#ed1c24] ${
                 pathname === "/faculty" ? "text-[#ed1c24]" : ""
               }`}
@@ -97,6 +115,7 @@ export default function Header() {
             </Link>
             <Link
               href="/events"
+              onClick={(e) => handleNavClick(e, "/events")}
               className={`transition-colors hover:text-[#ed1c24] ${
                 pathname === "/events" ? "text-[#ed1c24]" : ""
               }`}

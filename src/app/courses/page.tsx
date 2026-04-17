@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useLenis } from "lenis/react"; // 1. Import the Lenis hook
 import Footer from "@/src/components/layout/Footer";
-import { client } from "@/src/sanity/lib/client"; // Make sure this path is correct for your app!
+import { client } from "@/src/sanity/lib/client"; 
 
-// --- DATA STRUCTURE FOR CLEANER CODE ---
+// --- DATA STRUCTURE ---
 const programData = {
   UPSC: {
     title: "UPSC Civil Services Examination",
@@ -103,6 +104,8 @@ const programData = {
 };
 
 export default function CoursesPage() {
+  const lenis = useLenis(); // 2. Initialize the hook
+  
   const [selectedProgram, setSelectedProgram] = useState<
     "UPSC" | "MPSC" | null
   >(null);
@@ -110,12 +113,17 @@ export default function CoursesPage() {
   const [isPrelimsOpen, setIsPrelimsOpen] = useState(false);
   const [isMainsOpen, setIsMainsOpen] = useState(false);
 
-  // NEW: State to hold our fetched PDF URLs
   const [syllabusLinks, setSyllabusLinks] = useState<{ [key: string]: string }>(
     {},
   );
 
-  // NEW: Fetch the PDFs from Sanity when the page loads
+  // Scroll Reset Logic: Smoothly scroll to top whenever the program selection changes
+  useEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0);
+    }
+  }, [selectedProgram, lenis]);
+
   useEffect(() => {
     const fetchSyllabusLinks = async () => {
       const query = `*[_type == "syllabus"] {
@@ -139,15 +147,13 @@ export default function CoursesPage() {
     fetchSyllabusLinks();
   }, []);
 
-  // NEW: Check URL for a specific program when the page loads
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const program = params.get("program")?.toUpperCase();
       
-      // If the URL says ?program=UPSC or MPSC, open it automatically!
       if (program === "UPSC" || program === "MPSC") {
-        setSelectedProgram(program);
+        setSelectedProgram(program as "UPSC" | "MPSC");
       }
     }
   }, []);
@@ -178,7 +184,6 @@ export default function CoursesPage() {
         <section
           className={`max-w-7xl mx-auto px-6 ${selectedProgram ? "mt-24" : "mt-5"}`}
         >
-          {/* VIEW A: THE TWO BIG CARDS */}
           {!selectedProgram && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* UPSC Card */}
@@ -239,7 +244,6 @@ export default function CoursesPage() {
             </div>
           )}
 
-          {/* VIEW B: DETAILED PROGRAM VIEW */}
           {selectedProgram && (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <button
@@ -259,7 +263,6 @@ export default function CoursesPage() {
                   </span>
                 </div>
 
-                {/* NEW: Conditional Button based on Sanity Fetch */}
                 {syllabusLinks[selectedProgram] ? (
                   <a
                     href={`${syllabusLinks[selectedProgram]}?dl=`}
@@ -268,45 +271,21 @@ export default function CoursesPage() {
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 px-6 py-3 bg-[#ed1c24] text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-sm shrink-0 mt-1"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Download Syllabus PDF
                   </a>
                 ) : (
-                  <button
-                    disabled
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-white font-semibold rounded-lg shadow-sm shrink-0 mt-1 cursor-not-allowed"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
+                  <button disabled className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-white font-semibold rounded-lg shadow-sm shrink-0 mt-1 cursor-not-allowed">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Syllabus Unavailable
                   </button>
                 )}
               </div>
 
-              {/* ABOUT SECTION */}
               <div className="mb-12 space-y-8 border-b border-slate-100 pb-12">
                 {programData[selectedProgram].about.map((section, idx) => (
                   <div key={idx}>
@@ -321,37 +300,29 @@ export default function CoursesPage() {
               </div>
 
               <div className="space-y-12">
-                {/* 1. Eligibility Criteria */}
                 <div>
-                  <h3 className="text-2xl font-bold text-[#0a1c43] mb-6">
-                    Eligibility Criteria
-                  </h3>
+                  <h3 className="text-2xl font-bold text-[#0a1c43] mb-6">Eligibility Criteria</h3>
                   <div className="overflow-hidden rounded-xl border border-slate-200">
                     <table className="w-full text-left border-collapse">
                       <tbody>
-                        {programData[selectedProgram].eligibility.map(
-                          (item, index) => (
-                            <tr
-                              key={index}
-                              className="border-b border-slate-200 last:border-0 hover:bg-slate-50 transition-colors"
-                            >
-                              <th className="py-4 px-6 bg-slate-50/50 font-semibold text-[#0a1c43] w-1/3 border-r border-slate-200">
-                                {item.criteria}
-                              </th>
-                              <td className="py-4 px-6 text-gray-600 font-light">
-                                {Array.isArray(item.details) ? (
-                                  <ul className="list-disc pl-5 space-y-1">
-                                    {item.details.map((detail, dIdx) => (
-                                      <li key={dIdx}>{detail}</li>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  item.details
-                                )}
-                              </td>
-                            </tr>
-                          ),
-                        )}
+                        {programData[selectedProgram].eligibility.map((item, index) => (
+                          <tr key={index} className="border-b border-slate-200 last:border-0 hover:bg-slate-50 transition-colors">
+                            <th className="py-4 px-6 bg-slate-50/50 font-semibold text-[#0a1c43] w-1/3 border-r border-slate-200">
+                              {item.criteria}
+                            </th>
+                            <td className="py-4 px-6 text-gray-600 font-light">
+                              {Array.isArray(item.details) ? (
+                                <ul className="list-disc pl-5 space-y-1">
+                                  {item.details.map((detail, dIdx) => (
+                                    <li key={dIdx}>{detail}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                item.details
+                              )}
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>

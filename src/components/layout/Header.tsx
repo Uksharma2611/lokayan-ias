@@ -134,7 +134,7 @@ export default function Header() {
               />
             </div>
           </Link>
-
+          {/* This is the section for the header width and height */}
           <nav
             className={`hidden md:flex items-center gap-10 font-semibold transition-colors duration-300 ${isTransparent ? "text-white" : "text-[#0a1c43]"
               }`}

@@ -1,10 +1,23 @@
 import React from "react";
 import Link from "next/link";
 import Footer from "@/src/components/layout/Footer";
+import { Metadata } from "next";
 
-export const metadata = {
+// --- SEO METADATA ---
+export const metadata: Metadata = {
   title: "Privacy Policy | Lokayan IAS Academy",
-  description: "Privacy Policy for Lokayan IAS Academy students and visitors.",
+  description: "Read the Lokayan IAS Academy Privacy Policy to understand how we collect, use, and protect your personal data when you use our services.",
+  openGraph: {
+    title: "Privacy Policy | Lokayan IAS Academy",
+    description: "Learn how Lokayan IAS Academy safeguards your personal information and respects your privacy.",
+    url: "https://www.lokayan.com/privacy-policy", // Update with your actual live domain
+    siteName: "Lokayan IAS Academy",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function PrivacyPolicyPage() {

@@ -1,11 +1,23 @@
 import React from "react";
 import Link from "next/link";
 import Footer from "@/src/components/layout/Footer";
+import { Metadata } from "next";
 
-export const metadata = {
+// --- SEO METADATA ---
+export const metadata: Metadata = {
   title: "Terms & Conditions | Lokayan IAS Academy",
-  description:
-    "Terms and Conditions for Lokayan IAS Academy students and visitors.",
+  description: "Read the Terms and Conditions for enrolling in Lokayan IAS Academy. Understand our policies regarding UPSC and MPSC course enrollment, fee payments, and intellectual property.",
+  openGraph: {
+    title: "Terms & Conditions | Lokayan IAS Academy",
+    description: "Important terms, policies, and guidelines for students and visitors of Lokayan IAS Academy.",
+    url: "https://www.lokayan.com/terms-and-conditions", // Update with your actual live domain
+    siteName: "Lokayan IAS Academy",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function TermsAndConditionsPage() {

@@ -1,9 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Button from "../ui/Button";
 import Image from "next/image";
-import { client } from "../../sanity/lib/client";
 import { PortableText } from "@portabletext/react";
 
 interface Article {
@@ -14,6 +12,10 @@ interface Article {
   imageUrl: string;
   _createdAt: string;
   body: any;
+}
+
+interface HomePageContentProps {
+  initialArticles: Article[];
 }
 
 // --- UPDATED COURSES DATA (ONLY UPSC AND MPSC) ---
@@ -57,14 +59,10 @@ const coursesData = [
 const portableTextComponents = {
   block: {
     h1: ({ children }: any) => (
-      <h1 className="text-3xl font-bold text-[#0a1c43] mt-8 mb-4">
-        {children}
-      </h1>
+      <h1 className="text-3xl font-bold text-[#0a1c43] mt-8 mb-4">{children}</h1>
     ),
     h2: ({ children }: any) => (
-      <h2 className="text-2xl font-bold text-[#0a1c43] mt-8 mb-4">
-        {children}
-      </h2>
+      <h2 className="text-2xl font-bold text-[#0a1c43] mt-8 mb-4">{children}</h2>
     ),
     h3: ({ children }: any) => (
       <h3 className="text-xl font-bold text-[#0a1c43] mt-6 mb-3">{children}</h3>
@@ -92,30 +90,16 @@ const portableTextComponents = {
   },
 };
 
-export default function HomePageContent() {
+export default function HomePageContent({ initialArticles }: HomePageContentProps) {
   const [selectedCourse, setSelectedCourse] = useState<
     (typeof coursesData)[0] | null
   >(null);
-  const [articles, setArticles] = useState<Article[]>([]);
+
+  // Initialize state with the pre-fetched data from the server
+  const [articles] = useState<Article[]>(initialArticles || []);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
-  // 1. Fetch Articles Effect
-  useEffect(() => {
-    const fetchArticles = async () => {
-      const query = `*[_type == "article"] | order(_createdAt desc)[0...3] {
-        _id, title, "slug": slug.current, excerpt, "imageUrl": mainImage.asset->url, _createdAt, body
-      }`;
-      try {
-        const data = await client.fetch(query);
-        setArticles(data);
-      } catch (error) {
-        console.error("Failed to fetch articles:", error);
-      }
-    };
-    fetchArticles();
-  }, []);
-
-  // 2. Prevent Background Scrolling Effect
+  // Prevent Background Scrolling Effect
   useEffect(() => {
     if (selectedCourse || selectedArticle) {
       document.body.style.overflow = "hidden";
@@ -132,7 +116,7 @@ export default function HomePageContent() {
 
   return (
     <main className="bg-white">
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (Restored) */}
       <section
         className="relative w-full h-[65vh] min-h-[480px] flex items-center justify-center overflow-hidden"
         style={{
@@ -455,7 +439,6 @@ export default function HomePageContent() {
             </ul>
             <div className="flex items-center justify-between gap-4 pt-6 border-t">
               <div className="flex gap-3">
-                {/* Changed Button to Link to point to Contact Page */}
                 <Link
                   href="/contact"
                   className="px-6 py-2.5 bg-[#ed1c24] text-white rounded-full font-bold hover:bg-red-700 transition-all duration-300 shadow-md flex items-center justify-center text-sm"

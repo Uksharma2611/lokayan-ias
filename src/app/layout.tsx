@@ -15,9 +15,53 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// --- GLOBAL SEO METADATA ---
 export const metadata: Metadata = {
-  title: "Lokayan IAS Academy",
-  description: "Empowering the Next Generation of Civil Servants",
+  metadataBase: new URL("https://www.lokayan.com"), // Important: Replace with your actual live domain
+  title: {
+    default: "Lokayan IAS Academy | Premier UPSC & MPSC Coaching",
+    template: "%s | Lokayan IAS Academy", // Automatically appends the academy name to subpage titles
+  },
+  description:
+    "Empowering the Next Generation of Civil Servants. Lokayan IAS Academy offers expert coaching, foundation courses, test series, and mentorship for UPSC and MPSC examinations.",
+  keywords: [
+    "UPSC coaching",
+    "MPSC coaching",
+    "IAS academy",
+    "civil services preparation",
+    "Lokayan IAS Academy",
+    "UPSC foundation course",
+    "MPSC state services",
+    "IAS preparation Maharashtra"
+  ],
+  authors: [{ name: "Lokayan IAS Academy" }],
+  creator: "Lokayan IAS Academy",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "/",
+    title: "Lokayan IAS Academy | Premier UPSC & MPSC Coaching",
+    description:
+      "Empowering the Next Generation of Civil Servants with expert coaching and mentorship for UPSC and MPSC.",
+    siteName: "Lokayan IAS Academy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lokayan IAS Academy | Premier UPSC & MPSC Coaching",
+    description:
+      "Empowering the Next Generation of Civil Servants with expert coaching and mentorship for UPSC and MPSC.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

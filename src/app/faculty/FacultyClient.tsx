@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Footer from "@/src/components/layout/Footer";
+import { urlFor } from "@/src/sanity/lib/image"; // ✅ Added import
 
 // Define the shape of our data coming from Sanity
 interface FacultyMember {
@@ -18,6 +19,7 @@ interface FacultyMember {
 
 interface FacultyClientProps {
     initialFaculty: FacultyMember[];
+    homepageData: any; // ✅ Added homepageData prop
 }
 
 const DEPARTMENTS = [
@@ -28,12 +30,9 @@ const DEPARTMENTS = [
     "Interview Panel",
 ];
 
-export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
+export default function FacultyClient({ initialFaculty, homepageData }: FacultyClientProps) {
     const [activeDepartment, setActiveDepartment] = useState("All");
-    // Initialize state with the data fetched from the server
     const [facultyList] = useState<FacultyMember[]>(initialFaculty);
-
-    // State to track how many items are currently visible
     const [visibleCount, setVisibleCount] = useState(6);
 
     // Filter logic
@@ -41,8 +40,12 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
         return activeDepartment === "All" || member.department === activeDepartment;
     });
 
-    // Get only the items that should currently be visible
     const visibleFaculty = filteredFaculty.slice(0, visibleCount);
+
+    // ✅ Generate optimized Sanity URL for Founder
+    const founderImgUrl = homepageData?.founderImage
+        ? urlFor(homepageData.founderImage).width(400).quality(90).url()
+        : "/assets/founder-img.png";
 
     return (
         <>
@@ -83,10 +86,10 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                             </div>
                         </div>
 
-                        {/* Using the founder image from the homepage */}
+                        {/* ✅ Now using optimized Sanity URL */}
                         <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full border-[8px] border-slate-50 shadow-xl overflow-hidden shrink-0 order-1 md:order-2">
                             <Image
-                                src="/assets/founder-img.png"
+                                src={founderImgUrl}
                                 alt="Lokayan Founder"
                                 fill
                                 className="object-cover"
@@ -110,11 +113,11 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                     key={dept}
                                     onClick={() => {
                                         setActiveDepartment(dept);
-                                        setVisibleCount(6); // Reset count on category change
+                                        setVisibleCount(6);
                                     }}
                                     className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${activeDepartment === dept
-                                            ? "bg-[#0a1c43] text-white shadow-md"
-                                            : "bg-white text-gray-500 border border-slate-200 hover:bg-slate-100 hover:text-[#0a1c43]"
+                                        ? "bg-[#0a1c43] text-white shadow-md"
+                                        : "bg-white text-gray-500 border border-slate-200 hover:bg-slate-100 hover:text-[#0a1c43]"
                                         }`}
                                 >
                                     {dept}
@@ -127,7 +130,6 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                 {/* 4. FACULTY GRID */}
                 <section className="max-w-7xl mx-auto px-6">
                     {filteredFaculty.length > 0 ? (
-                        // Real Faculty Grid
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {visibleFaculty.map((member) => (
@@ -135,10 +137,8 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                         key={member._id}
                                         className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center relative overflow-hidden group"
                                     >
-                                        {/* Decorative top border */}
                                         <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#ed1c24] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
 
-                                        {/* Profile Image */}
                                         <div className="relative w-32 h-32 rounded-full border-4 border-slate-50 shadow-md mb-5 overflow-hidden">
                                             <Image
                                                 src={member.imageUrl || "/assets/placeholder.png"}
@@ -149,7 +149,6 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                             />
                                         </div>
 
-                                        {/* Exam Badges (UPSC / MPSC) */}
                                         {member.exams && member.exams.length > 0 && (
                                             <div className="flex gap-2 mb-4">
                                                 {member.exams.map((exam) => (
@@ -164,11 +163,9 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                             </div>
                                         )}
 
-                                        {/* Name & Designation */}
                                         <h3 className="text-xl font-bold text-[#0a1c43] mb-1">{member.name}</h3>
                                         <p className="text-[#ed1c24] font-medium text-sm mb-5">{member.designation}</p>
 
-                                        {/* Credentials / Experience */}
                                         <div className="w-full bg-slate-50 rounded-lg p-3 mb-5 space-y-1">
                                             {member.experience && (
                                                 <p className="text-xs text-gray-600 font-semibold flex items-center justify-center gap-1.5">
@@ -188,7 +185,6 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                             )}
                                         </div>
 
-                                        {/* Short Bio */}
                                         <p className="text-gray-600 text-sm font-light leading-relaxed flex-grow">
                                             "{member.bio}"
                                         </p>
@@ -196,7 +192,6 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                                 ))}
                             </div>
 
-                            {/* Load More Button */}
                             {filteredFaculty.length > visibleCount && (
                                 <div className="flex justify-center mt-10">
                                     <button
@@ -209,7 +204,6 @@ export default function FacultyClient({ initialFaculty }: FacultyClientProps) {
                             )}
                         </>
                     ) : (
-                        // Empty State
                         <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center max-w-2xl mx-auto">
                             <h3 className="text-xl font-bold text-[#0a1c43] mb-2">Faculty profiles coming soon</h3>
                             <p className="text-gray-500">We are currently updating our mentor profiles. Please check back shortly!</p>

@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 };
 
 export default async function FacultyPage() {
-  // Fetch faculty data on the SERVER for maximum SEO visibility
-  const query = `*[_type == "faculty"] | order(_createdAt asc) {
+  // 1. Define queries for both Faculty members and Homepage settings
+  const facultyQuery = `*[_type == "faculty"] | order(_createdAt asc) {
     _id,
     name,
     designation,
@@ -29,13 +29,24 @@ export default async function FacultyPage() {
     bio
   }`;
 
+  const homepageQuery = `*[_type == "homepage"][0]{ founderImage }`;
+
   let initialFaculty = [];
+  let homepageData = null;
+
   try {
-    initialFaculty = await client.fetch(query);
+    // 2. Fetch both datasets in parallel for better performance
+    const [facultyResult, homepageResult] = await Promise.all([
+      client.fetch(facultyQuery, {}, { next: { revalidate: 60 } }),
+      client.fetch(homepageQuery, {}, { next: { revalidate: 60 } })
+    ]);
+
+    initialFaculty = facultyResult;
+    homepageData = homepageResult;
   } catch (error) {
-    console.error("Failed to fetch faculty on server:", error);
+    console.error("Failed to fetch faculty data on server:", error);
   }
 
-  // Pass the server-fetched data to the client component
-  return <FacultyClient initialFaculty={initialFaculty} />;
+  // 3. Pass both faculty list and homepage data to the client component
+  return <FacultyClient initialFaculty={initialFaculty} homepageData={homepageData} />;
 }

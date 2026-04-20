@@ -6,6 +6,7 @@ import { useEffect } from "react";
 export default function SmoothScrolling({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const lenis = useLenis();
+  const isStudio = pathname?.startsWith("/studio");
 
   // This effect fires every time the URL changes
   useEffect(() => {
@@ -14,6 +15,10 @@ export default function SmoothScrolling({ children }: { children: React.ReactNod
       lenis.scrollTo(0, { immediate: true });
     }
   }, [pathname, lenis]);
+
+  if (isStudio) {
+    return <>{children}</>;
+  }
 
   return (
     <ReactLenis root options={{ 

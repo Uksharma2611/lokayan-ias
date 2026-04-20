@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
+import { urlFor } from "@/src/sanity/lib/image"; // ✅ Using your exact export name
 
 interface Article {
   _id: string;
@@ -16,6 +17,7 @@ interface Article {
 
 interface HomePageContentProps {
   initialArticles: Article[];
+  homepageData: any;
 }
 
 // --- UPDATED COURSES DATA (ONLY UPSC AND MPSC) ---
@@ -90,7 +92,7 @@ const portableTextComponents = {
   },
 };
 
-export default function HomePageContent({ initialArticles }: HomePageContentProps) {
+export default function HomePageContent({ initialArticles, homepageData }: HomePageContentProps) {
   const [selectedCourse, setSelectedCourse] = useState<
     (typeof coursesData)[0] | null
   >(null);
@@ -114,14 +116,24 @@ export default function HomePageContent({ initialArticles }: HomePageContentProp
   const closeCourseModal = () => setSelectedCourse(null);
   const closeArticleModal = () => setSelectedArticle(null);
 
+  // ✅ Generate highly optimized URLs using your urlFor function.
+  // Fallback to local assets if Sanity data is missing.
+  const heroBgUrl = homepageData?.heroBackground
+    ? urlFor(homepageData.heroBackground).width(1920).quality(80).url()
+    : "/assets/header-bg.png";
+
+  const founderImgUrl = homepageData?.founderImage
+    ? urlFor(homepageData.founderImage).width(400).quality(90).url()
+    : "/assets/founder-img.png";
+
   return (
     <main className="bg-white">
-      {/* 1. HERO SECTION (Restored) */}
+      {/* 1. HERO SECTION */}
       <section
         className="relative w-full h-[65vh] min-h-[480px] flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('/assets/header-bg.png')",
+          // INJECT THE SANITY URL HERE
+          backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('${heroBgUrl}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundColor: "#0f172a",
@@ -175,7 +187,7 @@ export default function HomePageContent({ initialArticles }: HomePageContentProp
           </div>
           <div className="relative w-40 h-40 md:w-[220px] md:h-[220px] rounded-full border-[6px] border-white shadow-lg overflow-hidden shrink-0">
             <Image
-              src="/assets/founder-img.png"
+              src={founderImgUrl} // INJECT THE SANITY URL HERE
               alt="Founder"
               fill
               className="object-cover"
